@@ -1,3 +1,9 @@
+#!/usr/bin/env stack
+{- stack
+  --resolver lts-2.0
+  runghc
+-}
+
 module Main where
 
 import Language.Boogie.Parser

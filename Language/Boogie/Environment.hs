@@ -16,6 +16,7 @@ module Language.Boogie.Environment (
   memLocals,
   memGlobals,
   memOld,
+  memLocalOld,
   memModified,
   memConstants,
   memMaps,
@@ -150,6 +151,7 @@ data Memory = Memory {
   _memLocals :: Store,        -- ^ Local variable store
   _memGlobals :: Store,       -- ^ Global variable store
   _memOld :: Store,           -- ^ Old global variable store (in two-state contexts)
+  _memLocalOld :: Store,
   _memModified :: Set Id,     -- ^ Set of global variables, which have been modified since the beginning of the current procedure  
   _memConstants :: Store,     -- ^ Constant store  
   _memMaps :: MapCache,       -- ^ Partial instances of maps
@@ -168,6 +170,7 @@ emptyMemory = Memory {
   _memLocals = emptyStore,
   _memGlobals = emptyStore,
   _memOld = emptyStore,
+  _memLocalOld = emptyStore,
   _memModified = S.empty,
   _memConstants = emptyStore,
   _memMaps = emptyCache,

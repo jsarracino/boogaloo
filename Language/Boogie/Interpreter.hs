@@ -124,12 +124,15 @@ old execution = do
     else do
       outerEnv <- get
       envMemory.memGlobals .= outerEnv^.envMemory.memOld
+      envMemory.memLocals .= outerEnv^.envMemory.memLocalOld
       envInOld .= True            
       res <- execution
       innerMem <- use envMemory
       envMemory.memOld .= innerMem^.memGlobals
+      envMemory.memLocalOld .= innerMem^.memLocals
       -- Restore globals to their outer values and add feshly initialized globals
       envMemory.memGlobals .= (outerEnv^.envMemory.memGlobals) `M.union` (removeDomain (innerMem^.memModified) (innerMem^.memGlobals))
+      envMemory.memLocals .= (outerEnv^.envMemory.memLocals) `M.union` (removeDomain (innerMem^.memModified) (innerMem^.memLocals))
       envInOld .= False
       return res
 
@@ -139,6 +142,8 @@ saveOld = do
   callerMem <- use envMemory
   let globals = callerMem^.memGlobals
   envMemory.memOld .= globals
+  let locals = callerMem^.memLocals
+  envMemory.memLocalOld .= locals
   envMemory.memModified .= S.empty
   return $ callerMem
 
