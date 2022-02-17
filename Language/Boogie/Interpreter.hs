@@ -153,6 +153,7 @@ restoreOld callerMem = do
   -- Among the callee's old values, those that had not been modified by the caller are "clean" (should be propagated back to the caller)
   (dirtyOlds, cleanOlds) <- uses (envMemory.memOld) $ partitionDomain (callerMem^.memModified)
   envMemory.memOld .= (callerMem^.memOld) `M.union` cleanOlds
+  envMemory.memLocalOld .= callerMem^.memLocalOld
   envMemory.memModified %= ((callerMem^.memModified) `S.union`)
   
 -- | Execute computation in a local context
@@ -1155,6 +1156,7 @@ eliminateLogicals = do
     go = do
       evalStore memGlobals
       evalStore memOld
+      evalStore memLocalOld
       evalStore memLocals
       evalStore memConstants
       evalMapConstraints    
